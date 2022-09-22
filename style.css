@@ -66,17 +66,29 @@ a:visited {
   width: 0;
 }
 
+.workouts__remove_all {
+  right: 1rem;
+  top: 0.5rem;
+  font-size: 2rem;
+  opacity: 0.4;
+}
+
 .workout {
   background-color: var(--color-dark--2);
   border-radius: 5px;
   padding: 1.5rem 2.25rem;
   margin-bottom: 1.75rem;
   cursor: pointer;
+  /* display: grid; */
+  position: relative;
+}
 
+.workout__data {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 0.75rem 1.5rem;
 }
+
 .workout--running {
   border-left: 5px solid var(--color-brand--2);
 }
@@ -93,6 +105,7 @@ a:visited {
 .workout__details {
   display: flex;
   align-items: baseline;
+  flex-direction: ro w;
 }
 
 .workout__icon {
@@ -111,6 +124,21 @@ a:visited {
   color: var(--color-light--1);
   text-transform: uppercase;
   font-weight: 800;
+}
+
+.workout__top_icon {
+  position: absolute;
+  font-size: 2rem;
+  opacity: 0.4;
+  top: 0.5rem;
+}
+
+.workout__icon--remove {
+  right: 1rem;
+}
+
+.workout__icon--edit {
+  right: 3.5rem;
 }
 
 .form {
