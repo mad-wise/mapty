@@ -67,10 +67,16 @@ a:visited {
 }
 
 .workouts__remove_all {
-  right: 1rem;
-  top: 0.5rem;
+  display: flex;
+  justify-content: end;
+  margin-bottom: 0.5rem;
+}
+
+.workouts__remove_all--icon {
   font-size: 2rem;
   opacity: 0.4;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
 }
 
 .workout {
