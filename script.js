@@ -75,6 +75,7 @@ class App {
   #mapZoomLevel = 13;
   #workouts = [];
   #markers = [];
+  #editedCoords = [];
 
   constructor() {
     //Get user's position
@@ -156,7 +157,17 @@ class App {
     const type = inputType.value;
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
-    const { lat, lng } = this.#mapEvent.latlng;
+    let lat, lng;
+
+    //Check if it is editing of workout or new workout
+    if (this.#editedCoords.length > 0) {
+      [lat, lng] = this.#editedCoords;
+      this.#editedCoords = [];
+    } else {
+      lat = this.#mapEvent.latlng.lat;
+      lng = this.#mapEvent.latlng.lng;
+    }
+
     let workout;
 
     //If activity runnig, create running object
@@ -223,7 +234,9 @@ class App {
   _renderWorkout(workout) {
     let html = `
     <li class="workout workout--${workout.type}" data-id=${workout.id}>
-
+    <div class="workout__top_icon workout__icon--edit">
+            <ion-icon name="create-outline"></ion-icon>
+    </div>
     <div class="workout__top_icon workout__icon--remove"><ion-icon name="close-outline" alt="Remove workout"></ion-icon></div>
     <div class="workout__data">
       <div class="workout__title">${workout.description}</div>
@@ -281,9 +294,9 @@ class App {
     document
       .querySelector('.workout__icon--remove')
       .addEventListener('click', this._removeWorkout.bind(this));
-    // document
-    //   .querySelector('.workout__icon--edit')
-    //   .addEventListener('click', this._editWorkout.bind(this));
+    document
+      .querySelector('.workout__icon--edit')
+      .addEventListener('click', this._editWorkout.bind(this));
   }
 
   _removeWorkout(event) {
@@ -325,9 +338,38 @@ class App {
     this.#markers.splice();
   }
 
-  // _editWorkout() {
-  //   console.log('hi');
-  // }
+  _editWorkout(event) {
+    const workoutEl = event.target.closest('.workout');
+
+    if (!workoutEl) return;
+
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+
+    inputDistance.value = workout.distance;
+    inputDuration.value = workout.duration;
+    inputType.value = workout.type;
+    this.#editedCoords = workout.coords;
+    if (workout.type === 'running') {
+      inputCadence.value = workout.cadence;
+      inputElevation.closest('.form__row').classList.add('form__row--hidden');
+      inputCadence.closest('.form__row').classList.remove('form__row--hidden');
+    }
+
+    if (workout.type === 'cycling') {
+      inputElevation.value = workout.elevationGain;
+      inputElevation
+        .closest('.form__row')
+        .classList.remove('form__row--hidden');
+      inputCadence.closest('.form__row').classList.add('form__row--hidden');
+    }
+
+    this._removeWorkout(event);
+
+    form.classList.remove('hidden');
+    inputDistance.focus();
+  }
 
   _moveToPopup(event) {
     const workoutEl = event.target.closest('.workout');
